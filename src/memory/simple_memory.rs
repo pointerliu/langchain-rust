@@ -14,10 +14,6 @@ impl SimpleMemory {
             messages: Vec::new(),
         }
     }
-
-    pub fn get_messages(&self) -> &Vec<Message> {
-        &self.messages
-    }
 }
 
 impl Into<Arc<dyn BaseMemory>> for SimpleMemory {
