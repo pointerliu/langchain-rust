@@ -8,7 +8,7 @@ use crate::{
     agent::AgentError,
     schemas::agent::{AgentAction, AgentEvent, AgentFinish},
 };
-
+use crate::language_models::GenerateResult;
 use super::prompt::FORMAT_INSTRUCTIONS;
 
 #[derive(Debug, Deserialize)]
@@ -25,7 +25,8 @@ impl ChatOutputParser {
 }
 
 impl ChatOutputParser {
-    pub fn parse(&self, text: &str) -> Result<AgentEvent, AgentError> {
+    pub fn parse(&self, generate_result: &GenerateResult) -> Result<AgentEvent, AgentError> {
+        let text = &generate_result.generation;
         log::debug!("Parsing to Agent Action: {}", text);
         match parse_json_markdown(text) {
             Some(value) => {
@@ -35,6 +36,7 @@ impl ChatOutputParser {
                 if agent_output.action == "Final Answer" {
                     Ok(AgentEvent::Finish(AgentFinish {
                         output: agent_output.action_input,
+                        generation_result: generate_result.clone(),
                     }))
                 } else {
                     Ok(AgentEvent::Action(vec![AgentAction {
@@ -48,6 +50,7 @@ impl ChatOutputParser {
                 log::debug!("No JSON found or malformed JSON in text: {}", text);
                 Ok(AgentEvent::Finish(AgentFinish {
                     output: text.to_string(),
+                    generation_result: generate_result.clone(),
                 }))
             }
         }

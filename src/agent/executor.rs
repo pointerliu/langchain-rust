@@ -149,10 +149,7 @@ where
 
                         memory.add_ai_message(&finish.output);
                     }
-                    return Ok(GenerateResult {
-                        generation: finish.output,
-                        ..Default::default()
-                    });
+                    return Ok(finish.generation_result);
                 }
             }
 
