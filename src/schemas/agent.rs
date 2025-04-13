@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
 use tokio::sync::mpsc;
+use crate::language_models::GenerateResult;
 
 pub enum ToolInput {
     //Will implement this in the future
@@ -26,6 +27,7 @@ pub struct LogTools {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AgentFinish {
     pub output: String,
+    pub generation_result: GenerateResult
 }
 
 #[derive(Debug)]
